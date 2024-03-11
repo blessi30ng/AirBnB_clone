@@ -5,7 +5,7 @@ Review class, subclass of basemodel
 
 from models.base_model import BaseModel
 
-class Review(BaseModels):
+class Review(BaseModel):
     """
     Represents review
     """
