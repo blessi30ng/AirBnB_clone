@@ -30,4 +30,7 @@ class BaseModel():
             self.updated_at = datetime.now()
 
     def __str__(self):
-
+        """
+        Return class name, id , dict
+        """
+        return "[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__)
