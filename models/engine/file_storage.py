@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """file storage for the airbnb clone project"""
+
 import json
 from models.base_model import BaseModel
 from models.user import User
@@ -14,7 +15,7 @@ class FileStorage:
     represebtation for storage engine for airbnb clone project
     """
     __file_path = 'file.json'
-    __object = {}
+    __objects = {}
     class_dict = {"BaseModel": BaseModel, "User": User,
             "State": State, "City": City, "Amenity": Amenity, "Place": Place, 
             "Review": Review}
@@ -26,17 +27,26 @@ class FileStorage:
         return self.__objects
 
     def new(self, obj):
+        """
+        sets new obj to existing dixtionaries
+        """
         self.__objects["{}.{}".format(obj.__class__.__name__, obj.id)] = obj
 
     def save(self):
+        """
+        save obj dictionaries to json file
+        """
         dic_storage = {}
 
         for key, obj in self.__objects.items():
-            dic_storage[key] = obj.to_dict
+            dic_storage[key] = obj.to_dict()
         with open(self.__file_path, 'w', encoding="UTF-8") as f:
             json.dump(dic_storage, f)
 
     def reload(self):
+        """
+        convert obj back to insatnces
+        """
         try:
             with open(self.__file_path, 'r', encoding="UTF-8") as f:
                 new_dic_storage = json.load(f)
