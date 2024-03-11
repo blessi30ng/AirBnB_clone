@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+"""Hbnb console"""
+
 import cmd
 import models
 
