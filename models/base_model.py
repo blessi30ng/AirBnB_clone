@@ -7,6 +7,7 @@ import uuid
 from datetime import datetime
 import models
 
+
 class BaseModel():
     """
     Represents basemodel
@@ -20,9 +21,11 @@ class BaseModel():
         if kwargs:
             for key, value in kwargs.items():
                 if "created_at" == key:
-                    self.created_at = datetime.strptime(value, format_for_date)
+                    self.created_at = datetime.strptime(value, 
+                            format_for_date)
                 elif "updated_at" == key:
-                    self.updated_at == datetime.strptime(value, format_for_date)
+                    self.updated_at == datetime.strptime(value, 
+                            format_for_date)
                 else:
                     setattr(self, key, value)
         else:
@@ -35,7 +38,8 @@ class BaseModel():
         """
         Return class name, id , dict
         """
-        return "[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__)
+        return "[{}] ({}) {}".format(self.__class__.__name__, 
+                self.id, self.__dict__)
 
     def __repr__(self):
         """
