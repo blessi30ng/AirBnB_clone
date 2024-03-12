@@ -1,6 +1,9 @@
 #!/usr/bin/python3
+<<<<<<< HEAD
+=======
 """Hbnb console"""
 
+>>>>>>> 194c0f62dc121bbc2201038227ad36df16fb5e3b
 import cmd
 import models
 
