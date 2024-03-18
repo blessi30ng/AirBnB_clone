@@ -1,57 +1,45 @@
 #!/usr/bin/python3
-"""file storage for the airbnb clone project"""
-
 import json
+import os
 from models.base_model import BaseModel
 from models.user import User
 from models.place import Place
-from models.review import Review
+from models.state import State
 from models.city import City
 from models.amenity import Amenity
-from models.state import State
+from models.review import Review
+
 
 class FileStorage:
-    """
-    represebtation for storage engine for airbnb clone project
-    """
-    __file_path = 'file.json'
+    __file_path = "file.json"
     __objects = {}
-    class_dict = {"BaseModel": BaseModel, "User": User,
-            "State": State, "City": City, "Amenity": Amenity, "Place": Place, 
-            "Review": Review}
 
     def all(self):
-        """
-        Returns dictionary
-        """
-        return self.__objects
+        return FileStorage.__objects
 
     def new(self, obj):
-        """
-        sets new obj to existing dixtionaries
-        """
-        self.__objects["{}.{}".format(obj.__class__.__name__, obj.id)] = obj
+        obj_class_name = obj.__class__.__name__
+        obj_key = "{}.{}".format(obj_class_name, obj.id)
+
+        FileStorage.__objects[obj_key] = obj
 
     def save(self):
-        """
-        save obj dictionaries to json file
-        """
-        dic_storage = {}
+        obj_dict = {}
+        for key, obj in FileStorage.__objects.items():
+            obj_dict[key] = obj.to_dict()
 
-        for key, obj in self.__objects.items():
-            dic_storage[key] = obj.to_dict()
-        with open(self.__file_path, 'w', encoding="UTF-8") as f:
-            json.dump(dic_storage, f)
+        with open(FileStorage.__file_path, "w", encoding="utf-8") as file:
+            json.dump(obj_dict, file)
 
     def reload(self):
-        """
-        convert obj back to insatnces
-        """
-        try:
-            with open(self.__file_path, 'r', encoding="UTF-8") as f:
-                new_dic_storage = json.load(f)
-            for key, value in new_dic_storage.items():
-                obj = self.class_dict[value['__class__']](**value)
-                self.__objects[key] = obj
-        except FileNotFoundError:
-            return
+        if os.path.isfile(FileStorage.__file_path):
+            with open(FileStorage.__file_path, "r", encoding="utf-8") as file:
+                try:
+                    obj_dict = json.load(file)
+                    for key, value in obj_dict.items():
+                        class_name, obj_id = key.split('.')
+                        cls = eval(class_name)
+                        inst = cls(**value)
+                        FileStorage.__objects[key] = inst
+                except Exception:
+                    pass

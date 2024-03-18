@@ -1,12 +1,14 @@
 #!/usr/bin/python3
 """
-City class, a subclass of Basemodel
+Module for the City class.
 """
 from models.base_model import BaseModel
 
+
 class City(BaseModel):
     """
-    Represents a City
+    City class that inherits from BaseModel
     """
+
     state_id = ""
     name = ""

@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 """
-its a State class, a subclass of Basemodel
+Module for the State class.
 """
-
 from models.base_model import BaseModel
+
 
 class State(BaseModel):
     """
-    Represents a state 
+    State class that inherits from BaseModel
     """
+
     name = ""

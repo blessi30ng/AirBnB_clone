@@ -1,14 +1,15 @@
 #!/usr/bin/python3
 """
-Place class, a subclass of basemodel
+Module for the Place class.
 """
-
 from models.base_model import BaseModel
+
 
 class Place(BaseModel):
     """
-    Represents place
+    Place class that inherits from BaseModel
     """
+
     city_id = ""
     user_id = ""
     name = ""
