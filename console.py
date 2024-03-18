@@ -2,6 +2,8 @@
 """
 Module for console
 """
+"""Hbnb console"""
+
 import cmd
 from models import storage
 from models.base_model import BaseModel
@@ -13,6 +15,16 @@ from models.state import State
 from models.city import City
 
 
+import models
+from models.base_model import BaseModel
+from models.user import User
+from models.place import Place
+from models.state import State
+from models.review import Review
+from models.city import City
+from models.amenity import Amenity
+
+
 class HBNBCommand(cmd.Cmd):
     """
     HBNBCommand console class
@@ -20,6 +32,9 @@ class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
     valid_classes = ["BaseModel", "User", "Amenity",
                      "Place", "Review", "State", "City"]
+    """console class"""
+    prompt = '(hbnb)'
+    storage = models.storage
 
     def emptyline(self):
         """
@@ -31,6 +46,7 @@ class HBNBCommand(cmd.Cmd):
         """
         EOF (Ctrl+D) signal to exit the program.
         """
+        """Exit the program"""
         print()
         return True
 
@@ -58,7 +74,7 @@ class HBNBCommand(cmd.Cmd):
         and save it to the JSON file.
         """
         if not arg:
-            print("** class name missing **")
+            print("**no class**")
             return
 
         if arg not in self.valid_classes:
@@ -81,6 +97,21 @@ class HBNBCommand(cmd.Cmd):
 
         if args[0] not in self.valid_classes:
             print("** class doesn't exist **")
+        try:
+            new_instance = models.classes[arg]()
+            new_instance.save()
+            print(new_instance.id)
+        except KeyError:
+            print("**no class**")
+
+    def do_show(self, arg):
+        """Prints the string representation of an instance"""
+        if not arg:
+            print("** no class name **")
+            return
+        arg_list = arg.split()
+        if arg_list[0] not in models.classes:
+            print("** no class  **")
             return
 
         if len(args) < 2:
@@ -105,6 +136,20 @@ class HBNBCommand(cmd.Cmd):
 
         if args[0] not in self.valid_classes:
             print("** class doesn't exist **")
+        try:
+            instance = models.storage.get(models.classes[arg_list[0]], arg_list[1])
+            print(instance)
+        except Exception as e:
+            print("** instance not found **")
+
+    def do_destroy(self, arg):
+        """Deletes an instance based on the class name and id"""
+        if not arg:
+            print("** no class name **")
+            return
+        arg_list = arg.split()
+        if arg_list[0] not in models.classes:
+            print("** no  class **")
             return
 
         if len(args) < 2:
@@ -118,6 +163,12 @@ class HBNBCommand(cmd.Cmd):
             storage.save()
         else:
             print("** no instance found **")
+        try:
+            instance = models.storage.get(models.classes[arg_list[0]], arg_list[1])
+            instance.delete()
+            models.storage.save()
+        except Exception as e:
+            print("** instance not  found **")
 
     def do_all(self, arg):
         """
@@ -135,6 +186,12 @@ class HBNBCommand(cmd.Cmd):
         instances = [str(obj) for key, obj in objects.items()
                      if key.startswith(arg + '.')]
         print(instances)
+        instances = models.storage.all()
+        if arg:
+            print([str(value) for key, value in instances.items() i
+                f type(value).__name__ == arg_list[0]])
+        else:
+            print([str(value) for value in instances.values()])
 
     def do_update(self, arg):
         """
@@ -179,6 +236,19 @@ class HBNBCommand(cmd.Cmd):
         setattr(obj, attribute_name, attribute_value)
         obj.save()
 
+        try:
+            instance = models.storage.get(models.classes[arg_list[0]], 
+                    arg_list[1])
+            if len(arg_list) < 3:
+                print("** no attribute name **")
+                return
+            if len(arg_list) < 4:
+                print("** value not found **")
+                return
+            setattr(instance, arg_list[2], eval(arg_list[3]))
+            models.storage.save()
+        except Exception as e:
+            print("**  instance not  found **")
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
